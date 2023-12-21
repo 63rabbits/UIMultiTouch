@@ -58,8 +58,23 @@ class MultiTouchableView: UIView {
     }
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+//        for touch in touches {
+//            removeViewForTouch(touch: touch)
+//        }
+
         for touch in touches {
-            removeViewForTouch(touch: touch)
+            if let view = touchViews[touch] {
+                UIView.animate(
+                    withDuration: 0.2,
+                    animations: {
+                        view.bounds.size = CGSize(width: 500, height: 500)
+                    },
+                    completion: {
+                        (finish: Bool) in
+                        self.removeViewForTouch(touch: touch)
+                    }
+                )
+            }
         }
 
         // for Debug
