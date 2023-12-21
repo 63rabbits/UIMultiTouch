@@ -12,6 +12,9 @@ import UIKit
 class MultiTouchableView: UIView {
     var touchViews = [UITouch:TouchSpotView]()
 
+    let defColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.3)
+    let flashColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.7)
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         initCommon()
@@ -26,7 +29,7 @@ class MultiTouchableView: UIView {
         autoresizingMask = [.flexibleWidth, .flexibleHeight]
         isUserInteractionEnabled = true
         isMultipleTouchEnabled = true
-        backgroundColor = UIColor(red: 1, green: 1, blue: 1, alpha: 0.3)
+        backgroundColor = defColor
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -58,24 +61,20 @@ class MultiTouchableView: UIView {
     }
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
-//        for touch in touches {
-//            removeViewForTouch(touch: touch)
-//        }
-
         for touch in touches {
-            if let view = touchViews[touch] {
-                UIView.animate(
-                    withDuration: 0.2,
-                    animations: {
-                        view.bounds.size = CGSize(width: 500, height: 500)
-                    },
-                    completion: {
-                        (finish: Bool) in
-                        self.removeViewForTouch(touch: touch)
-                    }
-                )
-            }
+            removeViewForTouch(touch: touch)
         }
+
+        UIView.animate(
+            withDuration: 0.1,
+            animations: {
+                self.backgroundColor = self.flashColor
+            },
+            completion: {
+                (finish: Bool) in
+                self.backgroundColor = self.defColor
+            }
+        )
 
         // for Debug
         print("--- [ Cancelled ] @ \(Double(touches.first!.timestamp)) sec ---")
